@@ -2,16 +2,16 @@
 session_start();
 
 // Database connection
-$host = "localhost";
-$user = "root";
-$pass = ""; // your DB password
-$db = "to do list"; // your DB name
+// $host = "localhost";
+// $user = "root";
+// $pass = ""; // your DB password
+// $db = "to do list"; // your DB name
 
-$conn = new mysqli($host, $user, $pass, $db);
+// $conn = new mysqli($host, $user, $pass, $db);
 
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-}
+// if ($conn->connect_error) {
+//     die("Connection failed: " . $conn->connect_error);
+// }
 
 // Handle login
 $message = "";
@@ -51,9 +51,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["username"], $_POST["pa
             <input type="text" name="username" placeholder="Username" required>
             <input type="passwor d" name="password" placeholder="Password" required>
             <button type="submit" class="login-btn">Login</button>
-            <button type="submit" class="register-btn">Register</button>
+
 
         </form> 
+                    <button onclick="window.open('register.php', '_blank')" class="register-btn">Register</button>
         <!-- <form action="register.php" method="POST">
             <input type="text" name="username" placeholder="Username" required>
             <input type="password" name="password" placeholder="Password" required>
