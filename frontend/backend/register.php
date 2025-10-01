@@ -1,18 +1,17 @@
 <?php
-<?php
 session_start();
 
 // Database connection
-$host = "localhost";
-$user = "root";
-$pass = ""; // your DB password
-$db = "to do list";
+// $host = "localhost";
+// $user = "root";
+// $pass = ""; // your DB password
+// $db = "to do list";
 
-$conn = new mysqli($host, $user, $pass, $db);
+// $conn = new mysqli($host, $user, $pass, $db);
 
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-}
+// if ($conn->connect_error) {
+//     die("Connection failed: " . $conn->connect_error);
+// }
 
 $message = "";
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["username"], $_POST["password"], $_POST["repassword"])) {
