@@ -57,6 +57,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["username"], $_POST["pa
             <input type="password" name="repassword" placeholder="Re-enter Password" required>
             <button type="submit" class="register-btn">Register</button>
         </form>
+         </form> 
+                    <button onclick="window.open('login.php','_self')" class="login-btn">login</button>
         <?php
             if (!empty($message)) {
                 echo '<p id="message">' . htmlspecialchars($message) . '</p>';
