@@ -34,7 +34,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["username"], $_POST["pa
             $_SESSION["user_id"] = $row['id'];
             $_SESSION["username"] = $username;
             // Redirect to a main application page, e.g., todo.php
-            header("Location: ../../todo.php"); 
+            header("Location: ../../frontend\backend\index.php"); 
             exit();
         } else {
             $message = "Invalid username or password.";
@@ -52,8 +52,8 @@ $conn->close();
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <title>Login</title>
-    <link rel="stylesheet" href="../../style.css">
-    <link href="https://fonts.googleapis.com/css?family=Roboto:400,700&display=swap" rel="stylesheet">
+    <!-- <link rel="stylesheet" href="frontend\backend\style.css"> -->
+    <link href="style.css" rel="stylesheet">
 </head>
 <body>
     <main class="center-card" role="main" aria-labelledby="login-title">
@@ -61,7 +61,7 @@ $conn->close();
         <form action="login.php" method="POST" class="auth-form" novalidate>
             <input type="text" name="username" placeholder="Username" required>
             <input type="password" name="password" placeholder="Password" required>
-            <button type="submit" class="btn login">Login</button>
+            <button type="submit" class="btn login" >Login</button>
         </form> 
         <button onclick="window.location.href='register.php'" class="btn register" style="margin-top:0.75rem;">Register</button>
         
