@@ -1,53 +1,38 @@
 <?php
+require_once 'db.php';
 session_start();
 
-// Database configuration - adjust values for your environment
-$host = 'localhost';
-$user = 'root';
-$pass = '';           // set your DB password
-$db   = 'todo_list';  // set your database name
-
-$conn = new mysqli($host, $user, $pass, $db);
-if ($conn->connect_error) {
-    die('Connection failed: ' . $conn->connect_error);
-}
-
 $message = '';
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['username'], $_POST['password'], $_POST['repassword'])) {
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $username = trim($_POST['username']);
     $password = $_POST['password'];
-    $repassword = $_POST['repassword'];
 
-    if ($password !== $repassword) {
-        $message = 'Passwords do not match.';
-    } elseif (strlen($username) < 3 || strlen($password) < 6) {
-        $message = 'Username must be at least 3 chars and password at least 6 chars.';
+    // Basic validation
+    if (empty($username) || empty($password)) {
+        $message = 'Please fill in all fields.';
     } else {
-        // check existing user (prepared statement)
-        $stmt = $conn->prepare('SELECT id FROM register WHERE username = ? LIMIT 1');
-        $stmt->bind_param('s', $username);
+        // Check if username already exists
+        $stmt = $conn->prepare("SELECT id FROM register WHERE username = ?");
+        $stmt->bind_param("s", $username);
         $stmt->execute();
         $stmt->store_result();
 
         if ($stmt->num_rows > 0) {
-            $message = 'Username already exists.';
-            $stmt->close();
+            $message = 'Username already taken.';
         } else {
-            $stmt->close();
-            // insert new user
+            // Hash password and insert user
             $hashed_password = password_hash($password, PASSWORD_DEFAULT);
-            $ins = $conn->prepare('INSERT INTO register (username, password) VALUES (?, ?)');
-            $ins->bind_param('ss', $username, $hashed_password);
-
-            if ($ins->execute()) {
-                $ins->close();
-                header('Location: login.php?registered=1');
-                exit;
+            $stmt = $conn->prepare("INSERT INTO register (username, password) VALUES (?, ?)");
+            $stmt->bind_param("ss", $username, $hashed_password);
+            
+            if ($stmt->execute()) {
+                header("Location: login.php");
+                exit();
             } else {
                 $message = 'Registration failed. Please try again.';
-                $ins->close();
             }
         }
+        $stmt->close();
     }
 }
 $conn->close();
@@ -55,28 +40,30 @@ $conn->close();
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Register</title>
-    <!-- <link href="https://fonts.googleapis.com/css?family=Roboto:400,700&display=swap" rel="stylesheet"> -->
     <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
 </head>
 <body>
-  <main class="center-card" role="main" aria-labelledby="register-title">
-    <h2 id="register-title">Register</h2>
-
-    <form action="register.php" method="POST" class="auth-form" novalidate>
-      <input type="text" name="username" placeholder="Username" required minlength="3" />
-      <input type="password" name="password" placeholder="Password" required minlength="6" />
-      <input type="password" name="repassword" placeholder="Re-enter Password" required minlength="6" />
-      <button type="submit" class="btn register">Register</button>
-    </form>
-
-    <button onclick="window.location.href='login.php'" class="btn login" style="margin-top:0.75rem;">Login</button>
-
-    <?php if (!empty($message)): ?>
-      <p id="message" role="status"><?php echo htmlspecialchars($message, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8'); ?></p>
-    <?php endif; ?>
-  </main>
+    <div class="blob a"></div>
+    <div class="blob b"></div>
+    <div class="blob c"></div>
+    <div class="center-container">
+        <div class="auth-card">
+            <h2>Register</h2>
+            <?php if ($message): ?>
+                <p class="message"><?php echo $message; ?></p>
+            <?php endif; ?>
+            <form action="register.php" method="POST">
+                <input type="text" name="username" placeholder="Username" required>
+                <input type="password" name="password" placeholder="Password" required>
+                <input type="password" name="confirm_password" placeholder="Confirm Password" required>
+                <button type="submit" class="register-btn">Register</button>
+            </form>
+            <p>Already have an account? <a href="login.php">Login here</a></p>
+        </div>
+    </div>
 </body>
 </html>
